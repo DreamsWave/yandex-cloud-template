@@ -4,15 +4,12 @@ terraform {
       source  = "yandex-cloud/yandex"
       version = "0.73.0"
     }
-
-    random = {
-      source  = "hashicorp/random"
-      version = "3.1.2"
+    archive = {
+      source  = "hashicorp/archive"
+      version = "2.2.0"
     }
   }
 }
-
-provider "random" {}
 
 provider "yandex" {
   token     = var.token
@@ -20,18 +17,26 @@ provider "yandex" {
   folder_id = var.folder_id
   zone      = var.zone
 }
+provider "archive" {}
 
 resource "yandex_function" "example-function" {
   name               = var.function_name
-  user_hash          = random_uuid.get.result
+  user_hash          = data.archive_file.example-function-archive.output_base64sha256
   runtime            = "nodejs16"
-  entrypoint         = "dist/index.handler"
+  entrypoint         = "index.handler"
   memory             = "128"
   execution_timeout  = "10"
   service_account_id = var.service_account_id
   content {
-    zip_filename = "../${var.function_name}.zip"
+    zip_filename = "${path.module}/../tmp/${var.function_name}.zip"
   }
 }
+data "archive_file" "example-function-archive" {
+  type        = "zip"
+  source_dir  = "${path.module}/../functions/${var.function_name}/dist"
+  output_path = "${path.module}/../tmp/${var.function_name}.zip"
+}
 
-resource "random_uuid" "get" {}
+
+
+
