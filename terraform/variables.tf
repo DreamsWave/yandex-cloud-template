@@ -15,10 +15,10 @@ variable "token" {
   type = string
 }
 
-variable "function_name" {
+variable "service_account_id" {
   type = string
 }
 
-variable "service_account_id" {
-  type = string
+variable "functions" {
+  type = list(any)
 }

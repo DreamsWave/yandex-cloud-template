@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc -p . && cp package.json dist"
+    "build": "rm -rf dist && tsc -p . && cp package.json dist"
   },
   "devDependencies": {
     "typescript": "^4.5.4",
