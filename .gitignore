@@ -1,7 +1,7 @@
 node_modules
 .env
 dist
-.serverless
-terraform/**/*.tfvars
-terraform/**/*.terraform
-terraform/**/.terraform.lock.hcl
+**/*.tfvars
+**/*.terraform
+**/*.tfstate
+**/*.terraform.lock.hcl
