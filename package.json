@@ -1,15 +1,11 @@
 {
-  "name": "yandex-cloud-serverless",
+  "name": "yandex-cloud-terraform",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "build": "tsc -p .",
-    "deploy": "npm run build && npx serverless deploy"
+    "build": "tsc -p ."
   },
   "devDependencies": {
-    "@yandex-cloud/serverless-plugin": "^1.0.2",
-    "serverless": "^3.12.0",
-    "serverless-dotenv-plugin": "^3.12.2",
     "typescript": "^4.5.4",
     "@typescript-eslint/eslint-plugin": "^5.18.0",
     "@typescript-eslint/parser": "^5.18.0",
