@@ -3,7 +3,7 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "deploy": "cd functions/example-function && npm run build && cd ../../terraform && terraform apply"
+    "deploy": "./scripts/build.sh && cd terraform && terraform apply -auto-approve"
   },
   "devDependencies": {}
 }
