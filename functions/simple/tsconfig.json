@@ -11,11 +11,8 @@
     "strict": true,
     "skipLibCheck": true,
     "resolveJsonModule": true,
-    "allowSyntheticDefaultImports": true,
-    "removeComments": false,
   },
   "include": [
     "./src"
-  ],
-  "exclude": ["node_modules"]
+  ]
 }

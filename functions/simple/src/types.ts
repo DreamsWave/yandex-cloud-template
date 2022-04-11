@@ -20,7 +20,7 @@ export interface FunctionEvent {
     queryStringParameters: Record<string, string>;
     multiValueQueryStringParameters: Record<string, string[]>;
     isBase64Encoded: boolean;
-    body: unknown;
+    body: any;
     requestContext: {
         httpMethod: string;
         requestId: string;
