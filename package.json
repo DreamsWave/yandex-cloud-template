@@ -1,5 +1,5 @@
 {
-  "name": "yandex-cloud-terraform",
+  "name": "yandex-cloud-template",
   "version": "1.0.0",
   "type": "module",
   "scripts": {
