@@ -3,7 +3,9 @@
   "version": "1.0.0",
   "type": "module",
   "scripts": {
-    "deploy": "./scripts/build.sh && cd terraform && terraform apply -auto-approve",
+    "init": "./scripts/init.sh",
+    "build": "./scripts/build.sh",
+    "deploy": "./scripts/build.sh && cd terraform && terraform apply",
     "dev": "nodemon --config nodemon.json",
     "start": "node --loader ts-node/esm ./dev.ts"
   },
