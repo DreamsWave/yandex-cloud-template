@@ -19,6 +19,11 @@ provider "yandex" {
 }
 provider "archive" {}
 
+resource "yandex_iam_service_account" "function-sa" {
+  name        = "function-sa"
+  description = "Service account to manage Functions"
+}
+
 resource "yandex_function" "function" {
   for_each = toset(var.functions)
   name               = each.key
@@ -27,7 +32,7 @@ resource "yandex_function" "function" {
   entrypoint         = "index.handler"
   memory             = "128"
   execution_timeout  = "10"
-  service_account_id = var.service_account_id
+  service_account_id = yandex_iam_service_account.function-sa.id
   content {
     zip_filename = "${path.module}/../tmp/${each.key}.zip"
   }
