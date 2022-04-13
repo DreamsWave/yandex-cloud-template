@@ -1,5 +1,4 @@
 token                    = "token"
 cloud_id                 = "cloud_id"
 folder_id                = "folder_id"
-zone                     = "ru-central1-a"
-functions                = ["yandex-cloud-function"]
+service_account_name     = "sa-functions"

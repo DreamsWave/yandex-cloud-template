@@ -1,47 +1,83 @@
-terraform {
-  required_providers {
-    yandex = {
-      source  = "yandex-cloud/yandex"
-      version = "0.73.0"
-    }
-    archive = {
-      source  = "hashicorp/archive"
-      version = "2.2.0"
-    }
-  }
-}
-
 provider "yandex" {
   token     = var.token
   cloud_id  = var.cloud_id
   folder_id = var.folder_id
-  zone      = var.zone
 }
-provider "archive" {}
+provider "random" {}
 
-resource "yandex_iam_service_account" "function-sa" {
-  name        = "function-sa"
+resource "random_uuid" "uuid" {}
+
+### IAM
+resource "yandex_iam_service_account" "this" {
+  name        = var.service_account_name
   description = "Service account to manage Functions"
 }
+resource "yandex_resourcemanager_folder_iam_member" "this" {
+  for_each  = toset(["editor", "serverless.functions.invoker"])
+  folder_id = var.folder_id
+  member    = "serviceAccount:${yandex_iam_service_account.this.id}"
+  role      = each.value
+}
+# resource "yandex_iam_service_account_static_access_key" "sa-static-key" {
+#   service_account_id = yandex_iam_service_account.this.id
+#   description        = "static access key for YMQ"
+# }
 
-resource "yandex_function" "function" {
-  for_each = toset(var.functions)
-  name               = each.key
-  user_hash          = data.archive_file.function-archive[each.key].output_base64sha256
+### Functions
+resource "yandex_function" "yandex-cloud-function" {
+  name               = "yandex-cloud-function"
+  description        = "Yandex Cloud Function example"
+  user_hash          = random_uuid.uuid.result
   runtime            = "nodejs16"
   entrypoint         = "index.handler"
   memory             = "128"
   execution_timeout  = "10"
-  service_account_id = yandex_iam_service_account.function-sa.id
+  service_account_id = yandex_iam_service_account.this.id
+  # tags               = ["some_tag"]
   content {
-    zip_filename = "${path.module}/../tmp/${each.key}.zip"
+    zip_filename = "${path.module}/../functions/yandex-cloud-function/build.zip"
   }
-}
-data "archive_file" "function-archive" {
-  for_each = toset(var.functions)
-  type        = "zip"
-  source_dir  = "${path.module}/../tmp/${each.key}"
-  output_path = "${path.module}/../tmp/${each.key}.zip"
+  # environment        = {}
+  # depends_on       = [yandex_message_queue.queue]
 }
 
+### Triggers
+# resource "yandex_function_trigger" "ymq-trigger" {
+#   name        = "ymq-trigger"
+#   description = "Trigger for ..."
+#   folder_id   = var.folder_id
+#   message_queue {
+#     queue_id           = yandex_message_queue.queue.arn
+#     service_account_id = yandex_iam_service_account.this.id
+#     batch_cutoff       = 1
+#     batch_size         = 1
+#   }
+#   function {
+#     id                 = yandex_function.yandex-cloud-function.id
+#     tag                = "$latest"
+#     service_account_id = yandex_iam_service_account.this.id
+#   }
+# }
+# resource "yandex_function_trigger" "cron-trigger" {
+#   name        = "cron-trigger"
+#   description = "Cron trigger"
+#   folder_id   = var.folder_id
+#   timer {
+#     cron_expression = "0/15 * * * ? *"
+#   }
+#   function {
+#     id                 = yandex_function.yandex-cloud-function.id
+#     tag                = "$latest"
+#     service_account_id = yandex_iam_service_account.this.id
+#   }
+# }
 
+### Message Queue
+# resource "yandex_message_queue" "queue" {
+#   name                      = "ymq"
+#   receive_wait_time_seconds = 10
+#   access_key                = yandex_iam_service_account_static_access_key.sa-static-key.access_key
+#   secret_key                = yandex_iam_service_account_static_access_key.sa-static-key.secret_key
+
+#   depends_on = [yandex_resourcemanager_folder_iam_member.this, yandex_iam_service_account_static_access_key.sa-static-key]
+# }
