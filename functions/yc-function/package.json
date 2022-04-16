@@ -1,7 +1,6 @@
 {
 	"name": "yandex-cloud-function-template",
 	"version": "1.0.0",
-	"type": "module",
 	"scripts": {
 		"build": "tsc -p . && cp package.json dist/",
 		"watch": "tsc -p . --watch"

@@ -1,12 +1,3 @@
-provider "yandex" {
-  token     = var.token
-  cloud_id  = var.cloud_id
-  folder_id = var.folder_id
-}
-provider "random" {}
-
-resource "random_uuid" "uuid" {}
-
 ### IAM
 resource "yandex_iam_service_account" "this" {
   name        = var.service_account_name
@@ -27,7 +18,7 @@ resource "yandex_resourcemanager_folder_iam_member" "this" {
 resource "yandex_function" "yc-function" {
   name               = "yc-function"
   description        = "Yandex Cloud Function example"
-  user_hash          = random_uuid.uuid.result
+  user_hash          = data.archive_file.yc-function.output_base64sha256
   runtime            = "nodejs16"
   entrypoint         = "index.handler"
   memory             = "128"
@@ -39,6 +30,11 @@ resource "yandex_function" "yc-function" {
   }
   # environment        = {}
   # depends_on       = [yandex_message_queue.queue]
+}
+data "archive_file" "yc-function" {
+  type        = "zip"
+  source_dir  = "${path.module}/../functions/yc-function/dist"
+  output_path = "${path.module}/../functions/yc-function/build.zip"
 }
 
 ### Triggers

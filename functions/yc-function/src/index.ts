@@ -13,8 +13,6 @@ export const handler = async (event: FunctionEvent, context: FunctionContext) =>
     }
     // DO STUFF...
 
-
-
     return {
         statusCode: 200,
         headers: {
