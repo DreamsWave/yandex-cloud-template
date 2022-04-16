@@ -1,3 +1,0 @@
-[submodule "functions/yandex-cloud-function"]
-	path = functions/yandex-cloud-function
-	url = https://github.com/idreamzzer/yandex-cloud-function-template

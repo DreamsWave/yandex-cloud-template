@@ -24,8 +24,8 @@ resource "yandex_resourcemanager_folder_iam_member" "this" {
 # }
 
 ### Functions
-resource "yandex_function" "yandex-cloud-function" {
-  name               = "yandex-cloud-function"
+resource "yandex_function" "yc-function" {
+  name               = "yc-function"
   description        = "Yandex Cloud Function example"
   user_hash          = random_uuid.uuid.result
   runtime            = "nodejs16"
@@ -35,7 +35,7 @@ resource "yandex_function" "yandex-cloud-function" {
   service_account_id = yandex_iam_service_account.this.id
   # tags               = ["some_tag"]
   content {
-    zip_filename = "${path.module}/../functions/yandex-cloud-function/build.zip"
+    zip_filename = "${path.module}/../functions/yc-function/build.zip"
   }
   # environment        = {}
   # depends_on       = [yandex_message_queue.queue]
