@@ -11,5 +11,4 @@ for f in ${functions}; do
     rm -rf dist
     npx tsc --build tsconfig.json
     cp package.json ./dist/package.json
-    zip -rj build.zip ./dist
 done
